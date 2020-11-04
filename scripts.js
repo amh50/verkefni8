@@ -13,8 +13,18 @@
  * @param {string} alphabet Stafróf sem afkóða á út frá
  * @returns {string} Upprunalegi strengurinn hliðraður um n til hægri
  */
-function encode(str, n, alphabet = '') {
-  return '';
+function encode(str, n, alphabet) {
+  let newLocation = new Array();
+  let result = '';
+  for (let i = 0; i < str.length; i++) {
+    newLocation[i] = alphabet.indexOf(str[i].toLocaleUpperCase()) + n; //finnum staðsetningu stafanna í stafrófinu, 
+                                                                       //hliðrum þeim um n til hægri og geymum í fylki
+    if (newLocation[i] > 31) {
+      newLocation[i] -= 32; 
+    }
+    result += alphabet.charAt(newLocation[i]);
+  }
+  return result;
 }
 
 /**
@@ -25,8 +35,18 @@ function encode(str, n, alphabet = '') {
  * @param {string} alphabet Stafróf sem afkóða á út frá
  * @returns {string} Upprunalegi strengurinn hliðraður um n til vinstri
  */
-function decode(str, n, alphabet = '') {
-  return '';
+function decode(str, n, alphabet) {
+  let newLocation = new Array();
+  let result = '';
+  for (let i = 0; i < str.length; i++) {
+    newLocation[i] = alphabet.indexOf(str[i].toLocaleUpperCase()) - n; //finnum staðsetningu stafanna í stafrófinu, 
+                                                                       //hliðrum þeim um n til vinstri og geymum í fylki
+    if (newLocation[i] < 0) {
+      newLocation[i] += 32; 
+    }
+    result += alphabet.charAt(newLocation[i]);
+  }
+  return result;
 }
 
 const Caesar = (() => {
@@ -39,8 +59,33 @@ const Caesar = (() => {
   // Default hliðrun, uppfært af "shift"
   let shift = 3;
 
-  function init(el) {
-    // Setja event handlera á viðeigandi element
+  function init(e) {
+    const alphabetInput = document.getElementById('alphabet');
+    const slider = document.getElementById('shift');
+    const radio = document.getElementsByName('type');
+    const stringInput = document.getElementById('input');
+
+    alphabetInput.addEventListener('input', (e) => {
+      alphabet = e.target.value;
+    })
+
+    radio[0].addEventListener('click', (e) => {
+      type = 'encode';
+    })
+
+    radio[1].addEventListener('click', (e) => {
+      type = 'decode';
+    })
+
+    slider.addEventListener('input', (e) => {
+      shift = e.target.value;
+      document.querySelector('.shiftValue').textContent = shift;
+    })
+
+    stringInput.addEventListener('input', (e) => {
+      document.querySelector('.result').textContent = e.target.value;
+    })
+    
   }
 
   return {
@@ -53,3 +98,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   Caesar.init(ceasarForm);
 });
+
