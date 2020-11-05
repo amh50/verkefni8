@@ -5,6 +5,9 @@
  * Þ.e.a.s., ekki þarf að skrifa meðhöndlun á HTML elementum sem vantar
  */
 
+/* eslint no-plusplus: ["error", { "allowForLoopAfterthoughts": true }] */
+/* eslint brace-style: [2, "stroustrup"] */
+
 /**
  * Kóðar streng með því að hliðra honum um n stök.
  *
@@ -14,39 +17,37 @@
  * @param {string} type "encode" eða "decode", segir til um hvort við séum að kóða eða afkóða
  * @returns {string} Upprunalegi strengurinn hliðraður um n til hægri
  */
-function code(str, shift, alphabet, type) {
-  
-  for (let i = 0; i < str.length; i++) {     //Athugum hvort það séu stafir sem eru ekki í alphabet í strengnum
-    if (alphabet.includes(str[i].toLocaleUpperCase()) === false) {
-      str[i]='';
-    }
-  }
 
-  let newLocation = new Array();
+function code(str, shift, alphabet, type) {
+  const newLocation = [];
   let result = '';
 
   if (type === 'encode') {
     for (let i = 0; i < str.length; i++) {
-      if (alphabet.includes(str[i].toLocaleUpperCase())) { //Athugum hvort stafurinn í strengnum sé í alphabet
-        newLocation[i] = alphabet.indexOf(str[i].toLocaleUpperCase()) + parseInt(shift, 10); //finnum staðsetningu stafanna í stafrófinu, 
-                                                                                             //hliðrum þeim um n til hægri og geymum í fylki 
-                                                              
+      // Athugum hvort stafurinn í strengnum sé í alphabet
+      if (alphabet.includes(str[i].toLocaleUpperCase())) {
+        // Finnum staðsetningu stafanna í stafrófinu, hliðrum þeim um shift til hægri og geymum í
+        // fylki
+        newLocation[i] = alphabet.indexOf(str[i].toLocaleUpperCase()) + parseInt(shift, 10);
+
         while (newLocation[i] > alphabet.length - 1) {
-          newLocation[i] -= alphabet.length; 
+          newLocation[i] -= alphabet.length;
         }
         result += alphabet.charAt(newLocation[i]);
       }
     }
   }
   else if (type === 'decode') {
-    for (let i = 0; i < str.length; i++) { 
-      if (alphabet.includes(str[i].toLocaleUpperCase())) { //Athugum hvort stafurinn í strengnum sé í alphabet
-      newLocation[i] = alphabet.indexOf(str[i].toLocaleUpperCase()) - parseInt(shift, 10); //finnum staðsetningu stafanna í stafrófinu, 
-                                                                                           //hliðrum þeim um n til vinstri og geymum í fylki
-      while (newLocation[i] < 0) {
-        newLocation[i] += alphabet.length; 
-      }
-      result += alphabet.charAt(newLocation[i]);
+    for (let i = 0; i < str.length; i++) {
+      // Athugum hvort stafurinn í strengnum sé í alphabet
+      if (alphabet.includes(str[i].toLocaleUpperCase())) {
+        // Finnum staðsetningu stafanna í stafrófinu, hliðrum þeim um shift til vinstri og geymum í
+        // fylki
+        newLocation[i] = alphabet.indexOf(str[i].toLocaleUpperCase()) - parseInt(shift, 10);
+        while (newLocation[i] < 0) {
+          newLocation[i] += alphabet.length;
+        }
+        result += alphabet.charAt(newLocation[i]);
       }
     }
   }
@@ -66,7 +67,7 @@ const Caesar = (() => {
   // Default output, uppfært af "str"
   let str = '';
 
-  function init(e) {
+  function init() {
     const alphabetInput = document.getElementById('alphabet');
     const slider = document.getElementById('shift');
     const radio = document.getElementsByName('type');
@@ -75,28 +76,28 @@ const Caesar = (() => {
     alphabetInput.addEventListener('input', (e) => {
       alphabet = e.target.value;
       document.querySelector('.result').textContent = code(str, shift, alphabet, type);
-    })
+    });
 
-    radio[0].addEventListener('click', (e) => {
+    radio[0].addEventListener('click', () => {
       type = 'encode';
       document.querySelector('.result').textContent = code(str, shift, alphabet, type);
-    })
+    });
 
-    radio[1].addEventListener('click', (e) => {
+    radio[1].addEventListener('click', () => {
       type = 'decode';
       document.querySelector('.result').textContent = code(str, shift, alphabet, type);
-    })
+    });
 
     slider.addEventListener('input', (e) => {
       shift = e.target.value;
       document.querySelector('.shiftValue').textContent = shift;
       document.querySelector('.result').textContent = code(str, shift, alphabet, type);
-    })
+    });
 
     stringInput.addEventListener('input', (e) => {
       str = e.target.value;
       document.querySelector('.result').textContent = code(str, shift, alphabet, type);
-    })
+    });
   }
 
   return {
@@ -109,4 +110,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
   Caesar.init(ceasarForm);
 });
-
